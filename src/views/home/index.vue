@@ -1,6 +1,5 @@
 <template>
   <div class="home">
-    {{ category }}
     <!-- 首页头部 -->
     <HomeHeader></HomeHeader>
 
@@ -17,8 +16,12 @@ import { defineComponent, computed } from "vue";
 import HomeHeader from "./home-header.vue";
 import HomeSwiper from "./home-swiper.vue";
 import HomeList from "./home-list.vue";
-import { useStore } from "vuex";
+import { Store, useStore } from "vuex";
 import { IGlobalState } from "@/store";
+
+function useCategory(store: Store<IGlobalState>) {
+ let category= computed(() => store.state.home.currentCategory);//vuex 中的状态
+}
 
 export default defineComponent({
   components: {
@@ -27,13 +30,10 @@ export default defineComponent({
     HomeList,
   },
   setup() {
+    //1.需要获取vuex中的分类状态 ,有个更改状态的功能
     let store = useStore<IGlobalState>();
-    let category = computed(() => {
-      return store.state.home.currentCategory;
-    });
-    return {
-      category,
-    };
+    //使用这函数 可以返回两个参数  一个参数是当前的分类  另一个是可以设置当前份额里
+    let { category, setCurrentCategory } = useCategory(store);
   },
 });
 </script>
